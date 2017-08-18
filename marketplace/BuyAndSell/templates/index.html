@@ -5,6 +5,9 @@
 <head>
     <meta charset="UTF-8">
     <title>MarketPlace</title>
+<link rel = "stylesheet"
+   	type = "text/css"
+   	href = "{% static "css/buttoncss.css" %}" />
 <style>
 div{
 font-family: Fantasy;
@@ -19,46 +22,35 @@ font-family: Fantasy;
 		<h3> {{today}} </h3>
     </div>
 
-    <div style="background-color: rgba(255,255,255,0.5); text-align:center">
+    <div style="background-color: rgba(255,255,255,0.5); text-align:center; padding: 20px 20px">
         <form method="post">
     		{% csrf_token %}
-            <div>
                 <label for="username">*Username: </label>
                 <input id="username" type="text" name="username" value={{ username }}>
-		<h6>{{message1}}</h6>
-		{{form.username.errors}}
-		
-            </div>
-
-            <div>
-                <label for="name">*Name: </label>
+		<font color="red" face="Times New Roman">
+		{{message1}}
+		{{form.username.errors}}</font><br><br>
+                <label for="name">*Name: &emsp; &nbsp;</label>
                 <input id="name" type="text" name="name" value={{ name }}>
-		<h6>{{message2}}</h6>{{form.name.errors}}
-		
-            </div>
-
-            <div>
-                <label for="email" padding = "left">*Email: </label>
+		<font color="red" face="Times New Roman">{{form.name.errors}}</font><br><br>
+                <label for="email">*Email: &emsp; &nbsp; </label>
                 <input id="email" type="text" name="email" value={{ email }}>
-		{{form.email.errors}}
-		
-            </div>
-
-            <div>
+		<font color="red" face="Times New Roman">{{form.email.errors}}</font><br><br>
                 <label for="password">*Password: </label>
                 <input id="password" type="password" name="password" value={{ password }}>
-		<h6>{{message3}}</h6>
-		{{form.password.errors}}
-		
-            </div>
-                <input type="submit" value="Sign Up">
+		<font color="red" face="Times New Roman">
+		{{message2}}
+		{{form.password.errors}}</font><br><br>
+                <input type="submit" id = "button" value="Sign Up">
         </form>
 
 
     </div><br><br>
-
+	<div style="text-align:center">
     <form action="/login/" method="get">
-        <input type="submit" class="btn btn-default" value="Login">
+	Already a user? &emsp; &nbsp;
+        <input type="submit" id = "button" class="btn btn-default" value="Login">
     </form>
+</div>
 </body>
 </html>
