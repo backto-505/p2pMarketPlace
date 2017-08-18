@@ -1,0 +1,64 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MarketPlace</title>
+<style>
+div{
+font-family: Fantasy;
+}
+</style>
+</head>
+<body background = "{% static "images/garageHomepage.jpg" %}" style = "padding: 80px; background-size : 100% 130%; background-color : black; background-repeat: no-repeat ">
+	
+	<div class="main" style="text-align:center; background-color: rgba(255,255,255,0.5); font-size:30px " >
+            <h1>WELCOME TO GARAGE-SALE</h1>
+            <h3>Join us today!</h3>
+		<h3> {{today}} </h3>
+    </div>
+
+    <div style="background-color: rgba(255,255,255,0.5); text-align:center">
+        <form method="post">
+    		{% csrf_token %}
+            <div>
+                <label for="username">*Username: </label>
+                <input id="username" type="text" name="username" value={{ username }}>
+		<h6>{{message1}}</h6>
+		{{form.username.errors}}
+		
+            </div>
+
+            <div>
+                <label for="name">*Name: </label>
+                <input id="name" type="text" name="name" value={{ name }}>
+		<h6>{{message2}}</h6>{{form.name.errors}}
+		
+            </div>
+
+            <div>
+                <label for="email" padding = "left">*Email: </label>
+                <input id="email" type="text" name="email" value={{ email }}>
+		{{form.email.errors}}
+		
+            </div>
+
+            <div>
+                <label for="password">*Password: </label>
+                <input id="password" type="password" name="password" value={{ password }}>
+		<h6>{{message3}}</h6>
+		{{form.password.errors}}
+		
+            </div>
+                <input type="submit" value="Sign Up">
+        </form>
+
+
+    </div><br><br>
+
+    <form action="/login/" method="get">
+        <input type="submit" class="btn btn-default" value="Login">
+    </form>
+</body>
+</html>

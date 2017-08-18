@@ -1,0 +1,24 @@
+
+#button{
+display: inline-block;
+  padding: 10px 15px;
+  font-size: 10;
+  font-family: Fantasy;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #000;
+  background-color: #DDD;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 9px #999;
+}
+
+#button:hover {background-color: lightblue}
+
+#button:active {
+  background-color: powderblue;
+  box-shadow: powderblue;;
+  transform: translateY(4px);
+}
