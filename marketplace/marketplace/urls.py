@@ -15,11 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from BuyAndSell.views import signup_view,login_view,feed_view,post_view,like_view,comment_view
+from BuyAndSell.views import signup_view,login_view,feed_view,post_view,like_view,comment_view,comment_like_view
 from django.contrib.auth.views import logout
 
 urlpatterns = [
-
+    url('likecomment/',comment_like_view),
     url('comment/', comment_view),
     url('like/', like_view),
     url('post/', post_view),

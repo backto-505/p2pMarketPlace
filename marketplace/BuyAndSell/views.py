@@ -2,8 +2,8 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect
-from forms import SignUpForm, LoginForm, PostForm, LikeForm, CommentForm
-from models import UserModel, SessionToken, PostModel, CommentModel, LikeModel
+from forms import SignUpForm, LoginForm, PostForm, LikeForm, CommentForm, CommentLikeForm
+from models import UserModel, SessionToken, PostModel, CommentModel, LikeModel, CommentLikeModel
 from django.http import HttpResponse
 from imgurpython import ImgurClient
 from marketplace.settings import BASE_DIR
@@ -147,6 +147,21 @@ def comment_view(request):
     else:
         return redirect('/login')
 
+def comment_like_view(request):
+    user = check_validation(request)
+    if user and request.method == 'POST':
+        form = CommentLikeForm(request.POST)
+        if form.is_valid():
+            comment_id = form.cleaned_data.get('comment').id
+            existing_like = CommentLikeModel.objects.filter(comment_id=comment_id, user=user).first()
+            if not existing_like:
+                CommentLikeModel.objects.create(comment_id=comment_id, user=user)
+                print "Like on comment successfully generated"
+            else:
+                existing_like.delete()
+            return redirect('/feed/')
+    else:
+        return redirect('/login/')
 
 def post_view(request):
     user = check_validation(request)

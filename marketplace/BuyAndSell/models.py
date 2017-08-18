@@ -27,6 +27,7 @@ class SessionToken(models.Model):
     def create_token(self):
         self.session_token = uuid.uuid4()
 
+
 class PostModel(models.Model):
     user = models.ForeignKey(UserModel)
     image = models.FileField(upload_to='user_images')
@@ -59,3 +60,17 @@ class CommentModel(models.Model):
   comment_text = models.CharField(max_length=555)
   created_on = models.DateTimeField(auto_now_add=True)
   updated_on = models.DateTimeField(auto_now=True)
+
+  @property
+  def like_count(self):
+      return self.commentlikemodel_set.count()
+
+  def liked_by_user(self, user):
+      l = self.commentlikemodel_set.filter(user=user)
+      return len(l) > 0
+
+class CommentLikeModel(models.Model):
+    user = models.ForeignKey(UserModel)
+    comment = models.ForeignKey(CommentModel)
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
