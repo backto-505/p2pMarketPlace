@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect
-from forms import SignUpForm, LoginForm, PostForm, LikeForm, CommentForm, CommentLikeForm, LogoutForm
+from forms import SignUpForm, LoginForm, PostForm, LikeForm, CommentForm, CommentLikeForm
 from models import UserModel, SessionToken, PostModel, CommentModel, LikeModel, CommentLikeModel
 from django.http import HttpResponse
 from imgurpython import ImgurClient
@@ -188,14 +188,9 @@ def post_view(request):
 def logout_view(request):
     user = check_validation(request)
     if user:
-        if request.method == 'GET':
-            form = LogoutForm()
-            return render(request,"logout.html",{"form":form})
-        elif request.method == 'POST':
-            form = LogoutForm(request.POST)
-            if form.is_valid():
-                user_id = SessionToken.objects.filter(id=user).first()
-                user_id.delete()
-                return redirect("/login/")
+            user_logout = SessionToken.objects.filter(user_id=user.id)
+            print len(user_logout)
+            user_logout.delete()
+            return redirect("/")
     else:
         return redirect("/login/")

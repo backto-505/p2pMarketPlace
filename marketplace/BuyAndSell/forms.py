@@ -36,8 +36,3 @@ class CommentLikeForm(forms.ModelForm):
   class Meta:
     model = CommentLikeModel
     fields = ['comment']
-
-class LogoutForm(forms.ModelForm):
-    class Meta:
-        model = SessionToken
-        fields = ['user']
