@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect
-from forms import SignUpForm, LoginForm, PostForm, LikeForm, CommentForm, CommentLikeForm
+from forms import SignUpForm, LoginForm, PostForm, LikeForm, CommentForm, CommentLikeForm, LogoutForm
 from models import UserModel, SessionToken, PostModel, CommentModel, LikeModel, CommentLikeModel
 from django.http import HttpResponse
 from imgurpython import ImgurClient
@@ -169,21 +169,33 @@ def post_view(request):
     if user:
         if request.method == "GET":
             form = PostForm()
-            return render(request,"post.html",{
-            "form" : form
-            })
+            return render(request,"post.html",{'form' : form})
+        elif request.method == 'POST':
+            form = PostForm(request.POST, request.FILES)
+            if form.is_valid():
+                image = form.cleaned_data.get('image')
+                caption = form.cleaned_data.get('caption')
+                post = PostModel(user = user , image = image , caption = caption)
+                post.save()
+                path = str(BASE_DIR + "\\" + post.image.url)
+                client = ImgurClient("a1e682f6312e125", "e971f46a3f9a67d9670f9818731aa235f88bcfb9")
+                post.image_url = client.upload_from_path(path, anon=True)['link']
+                post.save()
+                return redirect("/feed")
+    else:
+        return redirect("/login")
+
+def logout_view(request):
+    user = check_validation(request)
+    if user:
+        if request.method == 'GET':
+            form = LogoutForm()
+            return render(request,"logout.html",{"form":form})
+        elif request.method == 'POST':
+            form = LogoutForm(request.POST)
+            if form.is_valid():
+                user_id = SessionToken.objects.filter(id=user).first()
+                user_id.delete()
+                return redirect("/login/")
     else:
         return redirect("/login/")
-
-    if request.method == 'POST':
-        form = PostForm(request.POST, request.FILES)
-        if form.is_valid():
-            image = form.cleaned_data.get('image')
-            caption = form.cleaned_data.get('caption')
-            post = PostModel(user = user , image = image , caption = caption)
-            post.save()
-            path = str(BASE_DIR + "\\" + post.image.url)
-            client = ImgurClient("247e8cde53a7073", "0d7a494a106eff885e1ed09fb0c63c6809d46038")
-            post.image_url = client.upload_from_path(path, anon=True)['link']
-            post.save()
-            return redirect("/feed")
