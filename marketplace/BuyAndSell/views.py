@@ -163,6 +163,7 @@ def comment_like_view(request):
     else:
         return redirect('/login/')
 
+
 def post_view(request):
     user = check_validation(request)
     if user:
@@ -171,7 +172,10 @@ def post_view(request):
             return render(request,"post.html",{
             "form" : form
             })
-    elif request.method == 'POST':
+    else:
+        return redirect("/login/")
+
+    if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             image = form.cleaned_data.get('image')
