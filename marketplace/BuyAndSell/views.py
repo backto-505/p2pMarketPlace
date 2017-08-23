@@ -6,13 +6,18 @@ from forms import SignUpForm, LoginForm, PostForm, LikeForm, CommentForm, Commen
 from models import UserModel, SessionToken, PostModel, CommentModel, LikeModel, CommentLikeModel
 from django.http import HttpResponse
 from imgurpython import ImgurClient
+from clarifai import rest
+from clarifai.rest import ClarifaiApp, Image as ClImage
 from marketplace.settings import BASE_DIR
 from django.contrib.auth.hashers import make_password, check_password
 from datetime import datetime
 from django.core.mail import send_mail
 
 
+CLARIFAI_API_KEY = 'e6cd1358b04e4c81b3da1953e1482ec3'
+
 # Create your views here.
+
 
 def signup_view(request):
     today = datetime.now()
@@ -147,6 +152,7 @@ def comment_view(request):
     else:
         return redirect('/login')
 
+
 def comment_like_view(request):
     user = check_validation(request)
     if user and request.method == 'POST':
@@ -175,15 +181,22 @@ def post_view(request):
             if form.is_valid():
                 image = form.cleaned_data.get('image')
                 caption = form.cleaned_data.get('caption')
-                post = PostModel(user = user , image = image , caption = caption)
+                post = PostModel(user=user, image=image, caption=caption)
                 post.save()
                 path = str(BASE_DIR + "\\" + post.image.url)
                 client = ImgurClient("a1e682f6312e125", "e971f46a3f9a67d9670f9818731aa235f88bcfb9")
                 post.image_url = client.upload_from_path(path, anon=True)['link']
                 post.save()
+                app = ClarifaiApp(api_key=CLARIFAI_API_KEY)
+                model = app.models.get('Apparel')
+                img = ClImage(url=post.image_url)
+                response = model.predict([img])
+                post.category = response['outputs'][0]['data']['concepts'][0]['name']
+                post.save()
                 return redirect("/feed")
     else:
         return redirect("/login")
+
 
 def logout_view(request):
     user = check_validation(request)
